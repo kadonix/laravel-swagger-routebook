@@ -3,6 +3,23 @@
     "description": "A tiny route-first Swagger documentation package for Laravel.",
     "type": "library",
     "license": "MIT",
+    "keywords": [
+        "laravel",
+        "swagger",
+        "openapi",
+        "swagger-ui",
+        "api-documentation",
+        "api-docs",
+        "route-documentation",
+        "postman",
+        "documentation",
+        "routebook"
+    ],
+    "homepage": "https://github.com/kadonix/laravel-swagger-routebook",
+    "support": {
+        "issues": "https://github.com/kadonix/laravel-swagger-routebook/issues",
+        "source": "https://github.com/kadonix/laravel-swagger-routebook"
+    },
     "autoload": {
         "psr-4": {
             "Kadonix\\Routebook\\": "src/"
