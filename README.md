@@ -31,6 +31,12 @@ It keeps documentation close to your code with simple `@` annotations or PHP att
 composer require kadonix/laravel-swagger-routebook
 ```
 
+If you want the constraint to be written with three version digits in your project:
+
+```bash
+composer require "kadonix/laravel-swagger-routebook:^1.0.0"
+```
+
 Publish the config file if you want to customize Routebook:
 
 ```bash
@@ -483,6 +489,11 @@ return [
         'include_unannotated_routes' => false,
         'default_security' => [],
         'detect_auth_middleware' => true,
+    ],
+
+    'ui' => [
+        'title' => 'API Documentation',
+        'filter_select' => true,
     ],
 ];
 ```
