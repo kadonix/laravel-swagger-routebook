@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ config('routebook.ui.title', 'API Documentation') }}</title>
-    <link rel="stylesheet" href="{{ config('routebook.ui.swagger_ui_css') }}">
+    <link rel="stylesheet" href="{{ config('routebook.ui.swagger_ui_css', 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css') }}">
     <style>
         body {
             margin: 0;
@@ -90,24 +90,27 @@
 </head>
 <body>
 <div class="routebook-toolbar">
+    @if (config('routebook.ui.filter_select', true))
     <label>
         Definition
         <select id="routebook-definition">
             <option value="">All endpoints</option>
         </select>
     </label>
+    @endif
     <div class="routebook-actions">
         <a id="routebook-export-spec" href="#">Spec</a>
         <a id="routebook-export-postman" href="#">Postman</a>
     </div>
 </div>
 <div id="swagger-ui"></div>
-<script src="{{ config('routebook.ui.swagger_ui_js') }}"></script>
+<script src="{{ config('routebook.ui.swagger_ui_js', 'https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js') }}"></script>
 @php
     $specUrl = url(trim(config('routebook.routes.prefix', 'docs'), '/') . '/' . trim(config('routebook.routes.json', 'spec.json'), '/'));
     $docsUrl = url(trim(config('routebook.routes.prefix', 'docs'), '/'));
     $configuredToken = config('routebook.auth.token');
     $authScheme = config('routebook.auth.scheme', 'bearerAuth');
+    $filterSelect = config('routebook.ui.filter_select', true);
 @endphp
 <script>
     window.onload = async function () {
@@ -115,6 +118,7 @@
         const docsUrl = @json($docsUrl);
         const authScheme = @json($authScheme);
         const configuredToken = @json($configuredToken);
+        const filterSelect = @json($filterSelect);
         const definitionSelect = document.getElementById('routebook-definition');
         const exportSpec = document.getElementById('routebook-export-spec');
         const exportPostman = document.getElementById('routebook-export-postman');
@@ -122,7 +126,7 @@
         let originalSpec = null;
 
         const exportUrl = function (path) {
-            const selected = definitionSelect.value;
+            const selected = definitionSelect ? definitionSelect.value : '';
             const query = selected ? '?group=' + encodeURIComponent(selected) : '';
 
             return path + query;
@@ -188,7 +192,9 @@
         };
 
         originalSpec = await fetch(specUrl).then((response) => response.json());
-        fillDefinitionSelect(originalSpec);
+        if (filterSelect && definitionSelect) {
+            fillDefinitionSelect(originalSpec);
+        }
         updateExportLinks();
 
         window.ui = SwaggerUIBundle({
@@ -210,10 +216,12 @@
             layout: 'BaseLayout'
         });
 
-        definitionSelect.addEventListener('change', function () {
-            window.ui.specActions.updateJsonSpec(filterSpecByTag(originalSpec, definitionSelect.value));
-            updateExportLinks();
-        });
+        if (filterSelect && definitionSelect) {
+            definitionSelect.addEventListener('change', function () {
+                window.ui.specActions.updateJsonSpec(filterSpecByTag(originalSpec, definitionSelect.value));
+                updateExportLinks();
+            });
+        }
 
         if (currentToken !== '') {
             applyToken(currentToken);
