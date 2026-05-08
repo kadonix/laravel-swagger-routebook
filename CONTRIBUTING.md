@@ -53,5 +53,3 @@ Document bearer auth config
 ## Maintainer Review
 
 Maintainers may ask for changes before merging. A PR can be closed if it is inactive, too broad, or does not fit the package goals.
-
-Repository protection recommendations are documented in [GITHUB_SETUP.md](GITHUB_SETUP.md).
